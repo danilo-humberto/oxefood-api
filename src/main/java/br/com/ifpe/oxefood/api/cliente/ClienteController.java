@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import br.com.ifpe.oxefood.model.cliente.Cliente;
 import br.com.ifpe.oxefood.model.cliente.ClienteService;
+import io.swagger.v3.oas.annotations.Operation;
 
 @RestController
 @RequestMapping("/api/cliente")
@@ -26,6 +27,9 @@ public class ClienteController {
     @Autowired
     private ClienteService clienteService;
 
+    @Operation(
+       summary = "Serviço responsável por salvar um cliente no sistema."
+    )
     @PostMapping
     public ResponseEntity<Cliente> save(@RequestBody ClienteRequest request) {
 
@@ -33,16 +37,25 @@ public class ClienteController {
         return new ResponseEntity<Cliente>(cliente, HttpStatus.CREATED);
     }
 
+    @Operation(
+       summary = "Serviço responsável por listar todos os clientes do sistema."
+    )
     @GetMapping
     public List<Cliente> listarTodos() {
         return clienteService.listarTodos();
     }
 
+    @Operation(
+       summary = "Serviço responsável por listar um cliente no sistema."
+    )
     @GetMapping("/{id}")
     public Cliente obterPorID(@PathVariable Long id) {
         return clienteService.obterPorID(id);
     }
 
+    @Operation(
+       summary = "Serviço responsável por atualizar as informações de um cliente no sistema."
+    )
     @PutMapping("/{id}")
     public ResponseEntity<Cliente> update(@PathVariable("id") Long id, @RequestBody ClienteRequest request) {
 
@@ -50,6 +63,9 @@ public class ClienteController {
     return ResponseEntity.ok().build();
     }
 
+    @Operation(
+       summary = "Serviço responsável por deletar um cliente no sistema."
+    )
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
 

@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import br.com.ifpe.oxefood.model.fabricante.Fabricante;
 import br.com.ifpe.oxefood.model.fabricante.FabricanteService;
+import io.swagger.v3.oas.annotations.Operation;
 
 @RestController
 @RequestMapping("/api/fabricante")
@@ -25,6 +26,9 @@ public class FabricanteController {
     @Autowired
     private FabricanteService fabricanteService;
     
+    @Operation(
+       summary = "Serviço responsável por salvar um fabricante no sistema."
+    )
     @PostMapping
     public ResponseEntity<Fabricante> save(@RequestBody FabricanteRequest request) {
 
@@ -32,11 +36,17 @@ public class FabricanteController {
         return new ResponseEntity<Fabricante>(fabricante, HttpStatus.CREATED);
     }
 
+    @Operation(
+       summary = "Serviço responsável por listar todos os fabricantes no sistema."
+    )
     @GetMapping
     public List<Fabricante> listarTodos() {
         return fabricanteService.listarTodos();
     }
 
+    @Operation(
+       summary = "Serviço responsável por deletar um fornecedor no sistema."
+    )
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         fabricanteService.delete(id);
