@@ -2,7 +2,6 @@ package br.com.ifpe.oxefood.model.cliente;
 
 
 
-import org.hibernate.annotations.Columns;
 import org.hibernate.annotations.SQLRestriction;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
