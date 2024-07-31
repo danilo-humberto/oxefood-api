@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.com.ifpe.oxefood.model.categoriaProduto.CategoriaProdutoService;
@@ -25,62 +26,62 @@ import jakarta.validation.Valid;
 @RequestMapping("/api/produto")
 @CrossOrigin
 public class ProdutoController {
-    
-    @Autowired
-    private ProdutoService produtoService;
 
-    @Autowired
-    private CategoriaProdutoService categoriaProdutoService;
+   @Autowired
+   private ProdutoService produtoService;
 
-    @Operation(
-       summary = "Serviço responsável por salvar um produto no sistema."
-    )
-    @PostMapping
-    public ResponseEntity<Produto> save(@RequestBody @Valid ProdutoRequest request) {
+   @Autowired
+   private CategoriaProdutoService categoriaProdutoService;
 
-       Produto produtoNovo = request.build();
-       produtoNovo.setCategoria(categoriaProdutoService.obterPorID(request.getIdCategoria()));
-       Produto produto = produtoService.save(produtoNovo);
-       return new ResponseEntity<Produto>(produto, HttpStatus.CREATED);
-    }
+   @Operation(summary = "Serviço responsável por salvar um produto no sistema.")
+   @PostMapping
+   public ResponseEntity<Produto> save(@RequestBody @Valid ProdutoRequest request) {
 
+      Produto produtoNovo = request.build();
+      produtoNovo.setCategoria(categoriaProdutoService.obterPorID(request.getIdCategoria()));
+      Produto produto = produtoService.save(produtoNovo);
+      return new ResponseEntity<Produto>(produto, HttpStatus.CREATED);
+   }
 
-    @Operation(
-       summary = "Serviço responsável por listar todos os produtos no sistema."
-    )
-    @GetMapping
-    public List<Produto> listarTodos() {
-        return produtoService.listarTodos();
-    }
+   @Operation(summary = "Serviço responsável por listar todos os produtos no sistema.")
+   @GetMapping
+   public List<Produto> listarTodos() {
+      return produtoService.listarTodos();
+   }
 
-    @Operation(
-       summary = "Serviço responsável por listar um produto no sistema."
-    )
-    @GetMapping("/{id}")
-    public Produto obterPorID(@PathVariable Long id) {
-        return produtoService.obterPorID(id);
-    }
+   @Operation(summary = "Serviço responsável por listar um produto no sistema.")
+   @GetMapping("/{id}")
+   public Produto obterPorID(@PathVariable Long id) {
+      return produtoService.obterPorID(id);
+   }
 
-    @Operation(
-       summary = "Serviço responsável por atualizar as informações de um produto no sistema."
-    )
-    @PutMapping("/{id}")
-    public ResponseEntity<Produto> update(@PathVariable("id") Long id, @RequestBody ProdutoRequest request) {
+   @Operation(summary = "Serviço responsável por atualizar as informações de um produto no sistema.")
+   @PutMapping("/{id}")
+   public ResponseEntity<Produto> update(@PathVariable("id") Long id, @RequestBody ProdutoRequest request) {
 
-        Produto produto = request.build();
-        produto.setCategoria(categoriaProdutoService.obterPorID(request.getIdCategoria()));
-        produtoService.update(id, produto);
+      Produto produto = request.build();
+      produto.setCategoria(categoriaProdutoService.obterPorID(request.getIdCategoria()));
+      produtoService.update(id, produto);
 
-        return ResponseEntity.ok().build();
-    }
+      return ResponseEntity.ok().build();
+   }
 
-    @Operation(
-       summary = "Serviço responsável por deletar um produto no sistema."
-    )
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable Long id) {
+   @Operation(summary = "Serviço responsável por deletar um produto no sistema.")
+   @DeleteMapping("/{id}")
+   public ResponseEntity<Void> delete(@PathVariable Long id) {
 
-        produtoService.delete(id);
-        return ResponseEntity.ok().build();
-    }
+      produtoService.delete(id);
+      return ResponseEntity.ok().build();
+   }
+
+   @Operation(summary = "Serviço responsável por filtrar produtos no sistema.")
+   @PostMapping("/filtrar")
+   public List<Produto> filtrar(
+         @RequestParam(value = "codigo", required = false) String codigo,
+         @RequestParam(value = "titulo", required = false) String titulo,
+         @RequestParam(value = "idCategoria", required = false) Long idCategoria) {
+
+      return produtoService.filtrar(codigo, titulo, idCategoria);
+   }
+
 }

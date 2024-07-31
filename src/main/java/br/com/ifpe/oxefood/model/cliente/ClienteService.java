@@ -116,4 +116,20 @@ public class ClienteService {
         repository.save(cliente);
     }
 
+    public List<Cliente> filtrar(String cpf, String nome) {
+
+        List<Cliente> listaClientes = repository.findAll();
+
+        if((cpf != null && !"".equals(cpf)) && (nome == null || "".equals(nome))) {
+            listaClientes = repository.buscarPorCpf(cpf);
+        } 
+        else if ((nome != null && !"".equals(nome)) && (cpf == null || "".equals(cpf))){
+            listaClientes = repository.buscarPorNome(nome);
+        }
+        else if((nome != null && !"".equals(nome)) && (cpf != null && !"".equals(cpf))){
+            listaClientes = repository.consultarPorCpfENome(cpf, nome);
+        }
+
+        return listaClientes;
+    }
 }
