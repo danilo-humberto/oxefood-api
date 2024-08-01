@@ -6,6 +6,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import br.com.ifpe.oxefood.util.exception.EntregadorException;
 import jakarta.transaction.Transactional;
 
 @Service
@@ -16,6 +17,10 @@ public class EntregadorService {
 
     @Transactional
     public Entregador save(Entregador entregador) {
+
+        if (!entregador.getFoneCelular().startsWith("(81")) {
+            throw new EntregadorException(EntregadorException.MSG_START_81);
+        }
         
         entregador.setHabilitado(true);
         entregador.setVersao(1L);

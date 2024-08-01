@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 import br.com.ifpe.oxefood.model.entregador.Entregador;
 import br.com.ifpe.oxefood.model.entregador.EntregadorService;
 import io.swagger.v3.oas.annotations.Operation;
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/api/entregador")
@@ -31,7 +32,7 @@ public class EntregadorController {
        summary = "Serviço responsável por salvar um entregador no sistema."
     )
     @PostMapping
-    public ResponseEntity<Entregador> save(@RequestBody EntregadorRequest request) {
+    public ResponseEntity<Entregador> save(@RequestBody @Valid EntregadorRequest request) {
 
         Entregador entregador = entregadorService.save(request.build());
         return new ResponseEntity<Entregador>(entregador, HttpStatus.CREATED);

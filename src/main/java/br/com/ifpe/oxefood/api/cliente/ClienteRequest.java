@@ -2,9 +2,15 @@ package br.com.ifpe.oxefood.api.cliente;
 
 import java.time.LocalDate;
 
+import org.hibernate.validator.constraints.Length;
+import org.hibernate.validator.constraints.br.CPF;
+
 import com.fasterxml.jackson.annotation.JsonFormat;
 
 import br.com.ifpe.oxefood.model.cliente.Cliente;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -15,14 +21,21 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ClienteRequest {
-    
+
+    //@NotBlank = verifica se é nulo e vazio
+    @NotNull(message = "O nome é de preenchimento obrigatório")
+    @NotEmpty(message = "O nome é de preenchimento obrigatório")
+    @Length(max = 100, message = "O nome deverá ter no máximo 100 caracteres")
     private String nome;
 
     @JsonFormat(pattern = "dd/MM/yyyy")
     private LocalDate dataNascimento;
 
+    @NotBlank(message = "O CPF é de preenchimento obrigatório")
+    @CPF
     private String cpf;
 
+    @Length(min = 8, max = 20, message = "O campo Fone tem que ter entre {min} e {max} caracteres")
     private String foneCelular;
 
     private String foneFixo;

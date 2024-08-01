@@ -30,13 +30,13 @@ public class Cliente extends EntidadeAuditavel{
     @OneToMany(mappedBy = "cliente", orphanRemoval = true, fetch = FetchType.EAGER)
     private List<EnderecoCliente> enderecos;
     
-    @Column(length = 100)
+    @Column(length = 100, nullable = false)
     private String nome;
 
     @Column
     private LocalDate dataNascimento;
 
-    @Column(length = 20)
+    @Column(length = 20, unique = true)
     private String cpf;
 
     @Column
