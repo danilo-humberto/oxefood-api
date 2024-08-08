@@ -7,6 +7,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import br.com.ifpe.oxefood.model.acesso.UsuarioService;
 import br.com.ifpe.oxefood.util.exception.ClienteException;
 import jakarta.transaction.Transactional;
 
@@ -15,14 +16,19 @@ public class ClienteService {
 
     @Autowired
     private EnderecoClienteRepository enderecoClienteRepository;
-    
+
     @Autowired
     private ClienteRepository repository;
+
+    @Autowired
+    private UsuarioService usuarioService;
 
     @Transactional
     public Cliente save(Cliente cliente) {
 
-        if(!cliente.getFoneCelular().startsWith("(81")){
+        usuarioService.save(cliente.getUsuario());
+
+        if (!cliente.getFoneCelular().startsWith("(81")) {
             throw new ClienteException(ClienteException.MSG_START_81);
         }
 
@@ -33,7 +39,7 @@ public class ClienteService {
     }
 
     public List<Cliente> listarTodos() {
-  
+
         return repository.findAll();
     }
 
@@ -45,15 +51,15 @@ public class ClienteService {
     @Transactional
     public void update(Long id, Cliente clienteAlterado) {
 
-      Cliente cliente = repository.findById(id).get();
-      cliente.setNome(clienteAlterado.getNome());
-      cliente.setDataNascimento(clienteAlterado.getDataNascimento());
-      cliente.setCpf(clienteAlterado.getCpf());
-      cliente.setFoneCelular(clienteAlterado.getFoneCelular());
-      cliente.setFoneFixo(clienteAlterado.getFoneFixo());
-	    
-      cliente.setVersao(cliente.getVersao() + 1);
-      repository.save(cliente);
+        Cliente cliente = repository.findById(id).get();
+        cliente.setNome(clienteAlterado.getNome());
+        cliente.setDataNascimento(clienteAlterado.getDataNascimento());
+        cliente.setCpf(clienteAlterado.getCpf());
+        cliente.setFoneCelular(clienteAlterado.getFoneCelular());
+        cliente.setFoneFixo(clienteAlterado.getFoneFixo());
+
+        cliente.setVersao(cliente.getVersao() + 1);
+        repository.save(cliente);
     }
 
     @Transactional
@@ -69,44 +75,44 @@ public class ClienteService {
     @Transactional
     public EnderecoCliente adicionarEnderecoCliente(Long clienteId, EnderecoCliente endereco) {
 
-       Cliente cliente = this.obterPorID(clienteId);
-      
-       //Primeiro salva o EnderecoCliente:
+        Cliente cliente = this.obterPorID(clienteId);
 
-       endereco.setCliente(cliente);
-       endereco.setHabilitado(Boolean.TRUE);
-       enderecoClienteRepository.save(endereco);
-      
-       //Depois acrescenta o endereço criado ao cliente e atualiza o cliente:
+        // Primeiro salva o EnderecoCliente:
 
-       List<EnderecoCliente> listaEnderecoCliente = cliente.getEnderecos();
-      
-       if (listaEnderecoCliente == null) {
-           listaEnderecoCliente = new ArrayList<EnderecoCliente>();
-       }
-      
-       listaEnderecoCliente.add(endereco);
-       cliente.setEnderecos(listaEnderecoCliente);
-       cliente.setVersao(cliente.getVersao() + 1);
-       repository.save(cliente);
-      
-       return endereco;
-   }
+        endereco.setCliente(cliente);
+        endereco.setHabilitado(Boolean.TRUE);
+        enderecoClienteRepository.save(endereco);
 
-   @Transactional
-   public EnderecoCliente atualizarEnderecoCliente(Long id, EnderecoCliente enderecoAlterado) {
+        // Depois acrescenta o endereço criado ao cliente e atualiza o cliente:
 
-       EnderecoCliente endereco = enderecoClienteRepository.findById(id).get();
-       endereco.setRua(enderecoAlterado.getRua());
-       endereco.setNumero(enderecoAlterado.getNumero());
-       endereco.setBairro(enderecoAlterado.getBairro());
-       endereco.setCep(enderecoAlterado.getCep());
-       endereco.setCidade(enderecoAlterado.getCidade());
-       endereco.setEstado(enderecoAlterado.getEstado());
-       endereco.setComplemento(enderecoAlterado.getComplemento());
+        List<EnderecoCliente> listaEnderecoCliente = cliente.getEnderecos();
 
-       return enderecoClienteRepository.save(endereco);
-   }
+        if (listaEnderecoCliente == null) {
+            listaEnderecoCliente = new ArrayList<EnderecoCliente>();
+        }
+
+        listaEnderecoCliente.add(endereco);
+        cliente.setEnderecos(listaEnderecoCliente);
+        cliente.setVersao(cliente.getVersao() + 1);
+        repository.save(cliente);
+
+        return endereco;
+    }
+
+    @Transactional
+    public EnderecoCliente atualizarEnderecoCliente(Long id, EnderecoCliente enderecoAlterado) {
+
+        EnderecoCliente endereco = enderecoClienteRepository.findById(id).get();
+        endereco.setRua(enderecoAlterado.getRua());
+        endereco.setNumero(enderecoAlterado.getNumero());
+        endereco.setBairro(enderecoAlterado.getBairro());
+        endereco.setCep(enderecoAlterado.getCep());
+        endereco.setCidade(enderecoAlterado.getCidade());
+        endereco.setEstado(enderecoAlterado.getEstado());
+        endereco.setComplemento(enderecoAlterado.getComplemento());
+
+        return enderecoClienteRepository.save(endereco);
+    }
 
     @Transactional
     public void removerEnderecoCliente(Long id) {
@@ -117,7 +123,7 @@ public class ClienteService {
 
         Cliente cliente = this.obterPorID(endereco.getCliente().getId());
         cliente.getEnderecos().remove(endereco);
-            cliente.setVersao(cliente.getVersao() + 1);
+        cliente.setVersao(cliente.getVersao() + 1);
         repository.save(cliente);
     }
 
@@ -125,13 +131,11 @@ public class ClienteService {
 
         List<Cliente> listaClientes = repository.findAll();
 
-        if((cpf != null && !"".equals(cpf)) && (nome == null || "".equals(nome))) {
+        if ((cpf != null && !"".equals(cpf)) && (nome == null || "".equals(nome))) {
             listaClientes = repository.buscarPorCpf(cpf);
-        } 
-        else if ((nome != null && !"".equals(nome)) && (cpf == null || "".equals(cpf))){
+        } else if ((nome != null && !"".equals(nome)) && (cpf == null || "".equals(cpf))) {
             listaClientes = repository.buscarPorNome(nome);
-        }
-        else if((nome != null && !"".equals(nome)) && (cpf != null && !"".equals(cpf))){
+        } else if ((nome != null && !"".equals(nome)) && (cpf != null && !"".equals(cpf))) {
             listaClientes = repository.consultarPorCpfENome(cpf, nome);
         }
 
