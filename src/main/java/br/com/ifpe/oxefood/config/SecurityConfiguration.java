@@ -43,7 +43,7 @@ public class SecurityConfiguration {
                         .requestMatchers(HttpMethod.POST, "/api/cliente").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/auth").permitAll()
 
-                        .requestMatchers(HttpMethod.POST, "/api/produto")
+                        .requestMatchers(HttpMethod.POST, "/api/produto/")
                         .hasAnyAuthority(Usuario.ROLE_EMPRESA_ADMIN, Usuario.ROLE_EMPRESA_USER) // Cadastro de produto
 
                         .requestMatchers(HttpMethod.PUT, "/api/produto/*")
