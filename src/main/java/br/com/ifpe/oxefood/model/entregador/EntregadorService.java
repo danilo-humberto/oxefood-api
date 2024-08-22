@@ -6,6 +6,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import br.com.ifpe.oxefood.model.mensagens.EmailService;
 import br.com.ifpe.oxefood.util.exception.EntregadorException;
 import jakarta.transaction.Transactional;
 
@@ -14,6 +15,9 @@ public class EntregadorService {
     
     @Autowired
     private EntregadorRepository repository;
+
+    @Autowired
+    private EmailService emailService;
 
     @Transactional
     public Entregador save(Entregador entregador) {
@@ -26,7 +30,11 @@ public class EntregadorService {
         entregador.setVersao(1L);
         entregador.setDataCriacao(LocalDate.now());
 
-        return repository.save(entregador);
+        Entregador entregadorSalvo = repository.save(entregador);
+
+        emailService.enviarEmailConfirmacaoCadastroEntregador(entregadorSalvo);
+
+        return entregadorSalvo;
     }
 
     public List<Entregador> listarTodos() {

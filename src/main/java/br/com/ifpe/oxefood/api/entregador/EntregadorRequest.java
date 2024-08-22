@@ -8,6 +8,7 @@ import org.hibernate.validator.constraints.br.CPF;
 import com.fasterxml.jackson.annotation.JsonFormat;
 
 import br.com.ifpe.oxefood.model.entregador.Entregador;
+import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -19,6 +20,11 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class EntregadorRequest{
+
+    @NotBlank(message = "O Email é de preenchimento obrigatório")
+    @Email
+    private String email;
+
     
     @NotBlank(message = "É obrigatório preencher o nome")
     private String nome;
@@ -48,6 +54,7 @@ public class EntregadorRequest{
     public Entregador build() {
         
         return Entregador.builder()
+            .email(email)
             .nome(nome)
             .cpf(cpf)
             .rg(rg)
